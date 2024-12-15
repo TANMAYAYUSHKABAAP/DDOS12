@@ -30,7 +30,7 @@ sync_to_github:
     - echo "Syncing .txt files back to GitHub..."
     # Configure Git
     - git config --global user.name "TANMAYAYUSHKABAAP"
-    - git config --global user.email "YourGitHubEmail"
+    - git config --global user.email "morningstudy35@gmail.com"
     # Add and commit changes
     - git add users.txt attacks.txt logs.txt
     - git commit -m "Updated .txt files with latest data"
