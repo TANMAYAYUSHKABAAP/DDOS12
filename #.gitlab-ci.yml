@@ -1,5 +1,6 @@
 stages:
   - setup_and_run
+  - sync_to_github
   - wait_and_restart
 
 setup_and_run:
@@ -12,7 +13,7 @@ setup_and_run:
     - echo "Running the compiled binary..."
     - |
       while true; do
-        python3 titan.py || echo "Application crashed. Restarting..."
+        python3 titan.py  echo "Application crashed. Restarting..."
         sleep 5
       done
   timeout: 3h  
@@ -22,6 +23,22 @@ setup_and_run:
     - echo "Pipeline timed out. Triggering a new pipeline..."
     - curl -X POST -F token=$CI_JOB_TOKEN -F ref=$CI_COMMIT_REF_NAME https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/trigger/pipeline
 
+sync_to_github:
+  stage: sync_to_github
+  image: alpine/git:latest
+  script:
+    - echo "Syncing .txt files back to GitHub..."
+    # Configure Git
+    - git config --global user.name "YourGitHubUsername"
+    - git config --global user.email "YourGitHubEmail"
+    # Add and commit changes
+    - git add users.txt attacks.txt logs.txt
+    - git commit -m "Updated .txt files with latest data"
+    # Push changes back to GitHub
+    - git push https://oauth2:$GITHUB_TOKEN@github.com/Titan6371/opxtitan.git HEAD:main
+  only:
+    - main
+
 wait_and_restart:
   stage: wait_and_restart
   image: python:3.9
@@ -29,7 +46,7 @@ wait_and_restart:
     - echo "Sleeping for 1 hour before restarting pipeline..."
     - sleep 3600
     - echo "Restarting the pipeline..."
-    - curl -X POST -F token=$CI_JOB_TOKEN -F ref=$CI_COMMIT_REF_NAME https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/trigger/pipeline || exit 1
+    - curl -X POST -F token=$CI_JOB_TOKEN -F ref=$CI_COMMIT_REF_NAME https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/trigger/pipeline  exit 1
   timeout: 1h 
   only:
     - main
