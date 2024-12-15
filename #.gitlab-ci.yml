@@ -35,7 +35,7 @@ sync_to_github:
     - git add users.txt attacks.txt logs.txt
     - git commit -m "Updated .txt files with latest data"
     # Push changes back to GitHub
-    - git push https://oauth2:$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@github.com/Titan6371/opxtitan.git HEAD:main
+    - git push https://oauth2:$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@github.com/TANMAYAYUSHKABAAP/DDOS12.git HEAD:main
   only:
     - main
 
